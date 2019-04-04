@@ -10,7 +10,7 @@ router.get('/', function(req, res, next) {
     });
 });
 
-const articles = mongoose.model('Articles', articleSchema);
+const articles = mongoose.model('Articles');
 
 async function getArticleData(cb) {
     return articles

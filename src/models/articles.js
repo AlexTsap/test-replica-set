@@ -26,4 +26,4 @@ articleSchema.index({'translations.lang': 1});
 
 mongoose.model('Articles', articleSchema);
 
-module.exports = articleSchema;
+module.exports = mongoose.model('Articles');
