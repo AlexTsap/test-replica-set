@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose');
+var articleSchema = require('../src/models/articles.js');
 
 router.get('/', function(req, res, next) {
     return getArticleData((test) => {
@@ -8,7 +9,7 @@ router.get('/', function(req, res, next) {
     });
 });
 
-const articles = mongoose.model('Articles');
+const articles = mongoose.model('Articles', articleSchema);
 
 async function getArticleData(cb) {
     return articles
