@@ -6,7 +6,7 @@ var articleSchema = require('../src/models/articles.js');
 router.get('/', function(req, res, next) {
     return getArticleData((test) => {
         console.log(test);
-        res.render('success', test);
+        res.render('success', {title: test});
     });
 });
 
