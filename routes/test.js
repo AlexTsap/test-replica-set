@@ -5,7 +5,8 @@ var articleSchema = require('../src/models/articles.js');
 
 router.get('/', function(req, res, next) {
     return getArticleData((test) => {
-        res.send(test);
+        console.log(test);
+        res.send(test, 'test');
     });
 });
 
@@ -13,7 +14,7 @@ const articles = mongoose.model('Articles', articleSchema);
 
 async function getArticleData(cb) {
     return articles
-        .findOne()
+        .find()
         .lean()
         .exec(cb);
 }
