@@ -3,11 +3,14 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
-
+const config = require('./config');
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
+const models =require('./src/models');
 
 const app = express();
+config(app);
+models();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
