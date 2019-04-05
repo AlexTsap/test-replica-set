@@ -3,17 +3,22 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "node ./bin/www",
+    "start-artillery": "artillery run scenario.yaml"
   },
   "dependencies": {
+    "artillery": "^1.6.0-27",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.9",
     "express": "^4.16.4",
     "http-errors": "~1.6.2",
+    "lodash": "4.17.11",
     "mongoose": "5.4.20",
     "morgan": "~1.9.0",
     "nconf": "0.10.0",
-    "node-ssh": "^5.1.2",
     "pug": "2.0.0-beta11"
+  },
+  "devDependencies": {
+    "artillery-plugin-expect": "1.2.1"
   }
 }

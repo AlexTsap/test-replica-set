@@ -1,21 +1,29 @@
 var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose');
+const places = mongoose.model('Places');
 
 const articles = mongoose.model('Articles');
+const things = mongoose.model('Things');
 
 router.get('/', async function(req, res, next) {
-    const result = await getArticleData();
+    const placesIds = await getPlacesId();
+    console.log(placesIds);
+
+    const result = await getArticleData(thingsIds);
 
     return res.render('success', {title: result});
 });
 
-
-function getArticleData() {
+function getArticleData(thingsIds) {
     return articles
-        .find({}, {_id: 0, thing: 1})
-        .limit(1)
+        .find({_id: thingsIds})
         .exec();
+}
+
+function getPlacesId() {
+    return places
+        .distinct('_id')
 }
 
 module.exports = router;

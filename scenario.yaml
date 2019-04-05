@@ -1,0 +1,29 @@
+scenario.yaml
+config:
+  target: "http://35.205.193.69/test"
+  plugins:
+    expect: {}
+    #http:
+    #timeout: 30
+  phases:
+    - duration: 100
+      arrivalRate: 20
+  processor: "./scenario.js"
+scenarios:
+  - flow:
+      # Call setupSomeData
+      - function: "setupQuery"
+      - get:
+          headers:
+            Referer: "http://35.205.193.69/"
+          url: "/test"
+          capture:
+            - json: "$.success"
+              as: success
+          expect:
+            - statusCode: 200
+            - contentType: json
+            - hasProperty: success
+            - equals:
+                - "true"
+          afterResponse: "afterResponse"
