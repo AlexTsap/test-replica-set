@@ -41,6 +41,7 @@ module.exports = async function(app) {
         // If first connect fails because server-database is'nt up yet, try again.
         // This is only needed for first connect, not for runtime reconnects.
         // See: https://github.com/Automattic/mongoose/issues/5169
+        console.error(error);
         if (error.message && error.message.match(/failed to connect to server .* on first connect/)) {
             setTimeout(function() {
                 dbconnection();
