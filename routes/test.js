@@ -12,8 +12,7 @@ router.get('/', async function(req, res, next) {
 
 function getPlacesId() {
     return places
-        .find({}, {_id: 1})
-        .exec()
+        .distinct('id')
 }
 
 module.exports = router;
