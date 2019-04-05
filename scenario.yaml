@@ -1,5 +1,5 @@
 config:
-  target: "http://35.205.193.69"
+  target: "http://35.205.193.69:3000"
   plugins:
     expect: {}
     #http:
@@ -14,7 +14,7 @@ scenarios:
       - function: "setupQuery"
       - get:
           headers:
-            Referer: "http://35.205.193.69/"
+            Referer: "http://35.205.193.69:3000/"
           url: "/test"
           capture:
             - json: "$.success"
