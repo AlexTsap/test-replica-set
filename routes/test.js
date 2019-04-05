@@ -7,12 +7,12 @@ const articles = mongoose.model('Articles');
 router.get('/', async function(req, res, next) {
     const result = await getArticleData();
 
-    return res.render('success', {title: result.toJSON()});
+    return res.render('success', {title: result});
 });
 
 
-async function getArticleData() {
-    return await articles
+function getArticleData() {
+    return articles
         .find({}, {_id: 0, thing: 1})
         .limit(1)
         .exec();
