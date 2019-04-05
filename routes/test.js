@@ -1,10 +1,9 @@
 var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose');
-const places = mongoose.model('Places');
 
 const articles = mongoose.model('Articles');
-const things = mongoose.model('Things');
+const places = mongoose.model('Places');
 
 router.get('/', async function(req, res, next) {
     const placesIds = await getPlacesId();
@@ -21,13 +20,14 @@ router.get('/', async function(req, res, next) {
 
 function getArticleData(place) {
     return articles
-        .find({_id: place}, {thing: 1})
+        .find({_id: place._id}, {thing: 1})
         .exec();
 }
 
 function getPlacesId() {
     return places
-        .distinct('_id')
+        .find({}, {_id: 1})
+        .exec()
 }
 
 module.exports = router;
