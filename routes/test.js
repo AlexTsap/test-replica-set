@@ -28,7 +28,7 @@ function getInfoPlaceByPlacesIds(placesIds){
                 answer: 1,
                 translations: { $elemMatch: { lang: 'en' } }
             }
-        )
+        ).limit(100)
         .lean()
         .exec();
 }
