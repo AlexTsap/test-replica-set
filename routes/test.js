@@ -10,7 +10,7 @@ router.get('/', async function(req, res, next) {
     const placesIds = await getPlacesId();
     console.log(placesIds);
 
-    const result = await getArticleData(thingsIds);
+    const result = await getArticleData(placesIds);
 
     return res.render('success', {title: result});
 });
