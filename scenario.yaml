@@ -1,5 +1,5 @@
 config:
-  target: "http://35.205.193.69/test"
+  target: "http://35.205.193.69"
   plugins:
     expect: {}
     #http:
