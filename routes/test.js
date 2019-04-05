@@ -6,8 +6,13 @@ const places = mongoose.model('Places');
 
 router.get('/', async function(req, res, next) {
     const placesIds = await getPlacesId();
+    const idsArray = [];
 
-    return res.render('success', {title: placesIds});
+    for (const id of placesIds){
+        idsArray.push(id.toString());
+    }
+
+    return res.render('success', {title: idsArray});
 });
 
 function getPlacesId() {
