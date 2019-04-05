@@ -12,7 +12,7 @@ router.get('/', async function(req, res, next) {
 
 function getPlacesId() {
     return places
-        .distinct('id')
+        .distinct('_id')
 }
 
 module.exports = router;
