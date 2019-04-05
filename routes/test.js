@@ -1,7 +1,8 @@
 var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose');
-var articleSchema = require('../src/models/articles.js');
+
+const articles = mongoose.model('Articles');
 
 router.get('/', function(req, res, next) {
     return getArticleData((test) => {
@@ -10,11 +11,11 @@ router.get('/', function(req, res, next) {
     });
 });
 
-const articles = mongoose.model('Articles');
 
 async function getArticleData(cb) {
     return articles
-        .find()
+        .find({}, {_id: 0, thing: 1})
+        .limit(1)
         .exec(cb);
 }
 
