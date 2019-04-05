@@ -8,16 +8,20 @@ const things = mongoose.model('Things');
 
 router.get('/', async function(req, res, next) {
     const placesIds = await getPlacesId();
-    console.log(placesIds);
+    const thingArr = [];
+    for (const place of placesIds) {
+        const result = await getArticleData(place);
+        console.log(result);
 
-    const result = await getArticleData(placesIds);
+        thingArr.push(result);
+    }
 
-    return res.render('success', {title: result});
+    return res.render('success', {title: thingArr});
 });
 
-function getArticleData(placesIds) {
+function getArticleData(place) {
     return articles
-        .find({_id: {$in: placesIds}}, {thing: 1})
+        .find({_id: place}, {thing: 1})
         .exec();
 }
 
