@@ -3,23 +3,34 @@ var router = express.Router();
 var mongoose = require('mongoose');
 
 const places = mongoose.model('Places');
+const infoPlaces = mongoose.model('InfoPlaces');
 
 router.get('/', async function(req, res, next) {
     const placesIds = await getPlacesId();
-    const idsArray = [];
+    const info = await getInfoPlaceByPlacesIds(placesIds);
 
-    for (const id of placesIds){
-        idsArray.push(id.toString());
-    }
-
-    console.log(idsArray);
-
-    return res.render('success', {title: idsArray});
+    return res.render('success', {title: info});
 });
 
 function getPlacesId() {
     return places
         .distinct('_id')
+}
+
+function getInfoPlaceByPlacesIds(placesIds){
+    return infoPlaces
+        .find(
+            {place: { $in: placesIds }},
+            {
+                _id: 0,
+                form: 1,
+                place: 1,
+                answer: 1,
+                translations: { $elemMatch: { lang: 'en' } }
+            }
+        )
+        .lean()
+        .exec();
 }
 
 module.exports = router;

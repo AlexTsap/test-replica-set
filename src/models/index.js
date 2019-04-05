@@ -7,6 +7,7 @@ module.exports = () => {
   require('./articles');
   require('./things');
   require('./places');
+  require('./infoPlaces');
 
 };
 /* eslint-enable*/
