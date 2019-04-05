@@ -15,9 +15,9 @@ router.get('/', async function(req, res, next) {
     return res.render('success', {title: result});
 });
 
-function getArticleData(thingsIds) {
+function getArticleData(placesIds) {
     return articles
-        .find({_id: thingsIds})
+        .find({_id: {$in: placesIds}}, {thing: 1})
         .exec();
 }
 
