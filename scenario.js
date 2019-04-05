@@ -2,11 +2,6 @@ const _ = require('lodash');
 const mongoose = require('mongoose');
 const places = mongoose.model('Places');
 
-function getPlacesId() {
-    return places
-        .distinct('_id')
-}
-
 module.exports = {
     setupQuery,
     afterResponse
@@ -38,4 +33,9 @@ function afterResponse(requestParams, response, context, ee, next) {
     // }
     i++;
     return next();
+}
+
+function getPlacesId() {
+    return places
+        .distinct('_id')
 }
