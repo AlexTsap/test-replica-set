@@ -6,7 +6,7 @@ config:
     #timeout: 30
   phases:
     - duration: 100
-      arrivalRate: 10
+      arrivalRate: 20000
   processor: "./scenario.js"
 scenarios:
   - flow:
