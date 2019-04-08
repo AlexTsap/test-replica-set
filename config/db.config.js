@@ -4,16 +4,17 @@ let firstConnect = false;
 
 module.exports = async function(app) {
     const nconf = app.get('nconf');
-    const mongoUri = 'mongodb://replica:test_tsap@35.204.110.131:27017/dollarstreet?replicaSet=rs0';
+    const mongoUri = 'mongodb://replica:test_tsap@35.204.110.131:27017,35.204.128.188:27017,35.204.176.177:27017/dollarstreet?replicaSet=rs0';
     const db = mongoose.connection;
 
     const dbconnection = function() {
         mongoose
-            .connect(mongoUri, {
+            .createConnection(mongoUri, {
                 useNewUrlParser: true,
                 connectTimeoutMS: 5000,
                 reconnectInterval: 5000,
-                autoReconnect: true
+                autoReconnect: true,
+                reconnectTries: 30
             })
             .then((_db) => {
                 if (_db.connection._readyState && !firstConnect) {
