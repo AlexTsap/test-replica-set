@@ -13,7 +13,8 @@ module.exports = async function (app) {
                 useNewUrlParser: true,
                 connectTimeoutMS: 5000,
                 reconnectInterval: 5000,
-                autoReconnect: true
+                autoReconnect: true,
+                readPreference: 'nearest'
             })
             .then((_db) => {
                 if (_db.connection._readyState && !firstConnect) {
