@@ -7,30 +7,29 @@ module.exports = async function(app) {
     const mongoUri = 'mongodb://replica:test_tsap@35.204.110.131:27017,35.204.128.188:27017,35.204.176.177:27017/dollarstreet?replicaSet=rs0';
     const db = mongoose.connection;
 
-    const dbconnection = function() {
-        mongoose
-            .createConnection(mongoUri, {
+    const dbconnection = async function() {
+        await mongoose
+            .connect(mongoUri, {
                 useNewUrlParser: true,
                 connectTimeoutMS: 5000,
                 reconnectInterval: 5000,
-                autoReconnect: true,
-                reconnectTries: 30
-            })
-            .then((_db) => {
+                autoReconnect: true
+            }, async (error, _db) => {
+                if (error) {
+                    console.error(new Date(), String(error));
+                }
+
                 if (_db.connection._readyState && !firstConnect) {
                     firstConnect = true;
-                    dbconnection();
+                    await dbconnection();
 
                     return;
                 }
 
                 if (!_db.connection._readyState) {
-                    dbconnection();
+                    await dbconnection();
                 }
             })
-            .catch((error) => {
-                console.error(new Date(), String(error));
-            });
     };
 
     /*eslint-disable*/
@@ -44,8 +43,8 @@ module.exports = async function(app) {
         // See: https://github.com/Automattic/mongoose/issues/5169
         console.error(error);
         if (error.message && error.message.match(/failed to connect to server .* on first connect/)) {
-            setTimeout(function() {
-                dbconnection();
+            setTimeout(async function() {
+                await dbconnection();
             }, 5000);
         } else {
             // Some other error occurred.  Log it.
@@ -54,5 +53,5 @@ module.exports = async function(app) {
     });
     /*eslint-enable*/
 
-    dbconnection();
+    await dbconnection();
 };
