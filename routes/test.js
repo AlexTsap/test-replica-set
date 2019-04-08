@@ -9,7 +9,7 @@ router.get('/', async function(req, res, next) {
     const placesIds = await getPlacesId();
     const info = await getInfoPlaceByPlacesIds(placesIds);
     console.log(info);
-    return res.render('success', {title: info});
+    return res.send({success: true, body: info});
 });
 
 function getPlacesId() {
