@@ -4,18 +4,11 @@ let firstConnect = false;
 
 module.exports = async function(app) {
     const nconf = app.get('nconf');
-    const mongoUri = 'mongodb://replica:test_tsap@35.204.110.131:27017,35.204.128.188:27017,35.204.176.177:27017/dollarstreet?replicaSet=rs0';
-    const conn = mongoose.createConnection(mongoUri, {
-        useNewUrlParser: true,
-        connectTimeoutMS: 5000,
-        reconnectInterval: 5000,
-        autoReconnect: true
-    });
-
+    const mongoUri = 'mongodb://replica:test_tsap@35.204.110.131:27017,35.204.128.188:27018,35.204.176.177:27019/dollarstreet?replicaSet=rs0';
     const db = mongoose.connection;
 
     const dbconnection = function() {
-        conn
+        mongoose
             .connect(mongoUri, {
                 useNewUrlParser: true,
                 connectTimeoutMS: 5000,
