@@ -10,7 +10,6 @@ module.exports = async function (app) {
     const dbconnection = function () {
         mongoose
             .connect(mongoUri, {
-                useMongoClient: true,
                 useNewUrlParser: true,
                 connectTimeoutMS: 5000,
                 reconnectInterval: 5000,
