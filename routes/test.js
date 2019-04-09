@@ -6,10 +6,10 @@ const places = mongoose.model('Places');
 const infoPlaces = mongoose.model('InfoPlaces');
 
 router.get('/', async function(req, res, next) {
-    const placesIds = await getPlacesId();
-    const info = await getInfoPlaceByPlacesIds(placesIds);
-    console.log(info);
-    return res.send({success: true, body: info});
+    // const placesIds = await getPlacesId();
+    // const info = await getInfoPlaceByPlacesIds(placesIds);
+    console.log('test');
+    // return res.send({success: true, body: info});
 });
 
 function getPlacesId() {
