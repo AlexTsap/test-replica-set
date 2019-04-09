@@ -19,6 +19,8 @@
     "pug": "2.0.0-beta11"
   },
   "devDependencies": {
-    "artillery-plugin-expect": "1.2.1"
+    "artillery-plugin-expect": "1.2.1",
+    "async-retry": "^1.2.3",
+    "node-fetch": "^2.3.0"
   }
 }
