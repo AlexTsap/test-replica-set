@@ -1,8 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
-const retry = require('async-retry');
-const fetch = require('node-fetch');
+const async = require('async');
 
 const places = mongoose.model('Places');
 const infoPlaces = mongoose.model('InfoPlaces');
@@ -10,22 +9,26 @@ const infoPlaces = mongoose.model('InfoPlaces');
 router.get('/', async function (req, res, next) {
     const placesIds = await getPlacesId();
     const info = await getInfoPlaceByPlacesIds(placesIds);
-    if (res.statusCode !== 200) {
-        await retry(async bail => {
-            // if anything throws, we retry
-            const res = await fetch('http://35.205.193.69:3000/test');
-
-            if (403 === res.status) {
-                // don't retry upon 403
-                bail(new Error('Unauthorized'));
-                return
+    if (!placesIds) {
+        async.retry({
+            times: 10,
+            interval: function(retryCount) {
+                return 50 * Math.pow(2, retryCount);
             }
+        }, getPlacesId, async function(err, placesIds) {
+            const info = await getInfoPlaceByPlacesIds(placesIds);
 
-            const data = await res.text();
-            return data.substr(0, 500)
-        }, {
-            retries: 5
-        })
+            if (!info) {
+                async.retry({
+                    times: 10,
+                    interval: function(retryCount) {
+                        return 50 * Math.pow(2, retryCount);
+                    }
+                }, getInfoPlaceByPlacesIds, async function(err, info) {
+                    return res.send({success: true, body: info});
+                });
+            }
+        });
     }
 
     return res.send({success: true, body: info});

@@ -5,7 +5,7 @@ config:
     #http:
     #timeout: 30
   phases:
-    - duration: 10000git
+    - duration: 100
       arrivalRate: 100
   processor: "./scenario.js"
 scenarios:
