@@ -1,15 +1,14 @@
 var express = require('express');
 var router = express.Router();
-var mongoose = require('mongoose');
+// var mongoose = require('mongoose');
 
-const places = mongoose.model('Places');
-const infoPlaces = mongoose.model('InfoPlaces');
+// const places = mongoose.model('Places');
+// const infoPlaces = mongoose.model('InfoPlaces');
 
-router.get('/', async function(req, res, next) {
+router.get('/', function(req, res, next) {
     // const placesIds = await getPlacesId();
     // const info = await getInfoPlaceByPlacesIds(placesIds);
-    console.log('test');
-    // return res.send({success: true, body: info});
+    return res.send({success: true, body: 'Success'});
 });
 
 function getPlacesId() {
