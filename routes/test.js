@@ -33,6 +33,7 @@ router.get('/', async (req, res, next) => {
         try {
             placesIds = await getPlacesId();
             info = await getInfoPlaceByPlacesIds(placesIds);
+            console.log(info);
         } catch (e) {
             counter--;
             error = e;
@@ -47,11 +48,13 @@ router.get('/', async (req, res, next) => {
 });
 
 async function getPlacesId() {
+    console.log('places');
     return places
         .distinct('_id')
 }
 
 async function getInfoPlaceByPlacesIds(placesIds) {
+    console.log('test');
     return infoPlaces
         .find(
             {place: {$in: placesIds}},
