@@ -24,18 +24,19 @@ const infoPlaces = mongoose.model('InfoPlaces');
 // }));
 
 router.get('/', async (req, res, next) => {
-    let counter = 0;
+    let counter = 3;
     let placesIds;
     let info;
     let error = true;
 
-    while (counter < 3 && error) {
+    while (counter && error) {
         try {
+            error = false;
             placesIds = await getPlacesId();
             info = await getInfoPlaceByPlacesIds(placesIds);
             console.log(info);
         } catch (e) {
-            counter++;
+            counter--;
             error = e;
         }
     }
