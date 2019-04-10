@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
-const async = require('async');
+// const async = require('async');
 
 const places = mongoose.model('Places');
 const infoPlaces = mongoose.model('InfoPlaces');
@@ -23,30 +23,59 @@ const infoPlaces = mongoose.model('InfoPlaces');
 //     }
 // }));
 
-router.get('/', async function (req, res, next) {
+router.get('/', async (req, res, next) => {
     const placesIds = await getPlacesId();
-    const info = await getInfoPlaceByPlacesIds(placesIds);
-    if (!placesIds) {
-        async.retry(5, await getPlacesId, async function(err, placesIds) {
-            const info = await getInfoPlaceByPlacesIds(placesIds);
+    try {
+        const info = await getInfoPlaceByPlacesIds(placesIds);
 
-            if (!info) {
-                async.retry(5, await getInfoPlaceByPlacesIds, async function(err, info) {
-                    return res.send({success: true, body: info});
-                });
+        return res.send({success: true, body: info});
+    } catch (e) {
+        let t = 0;
+        let info;
+        while(t < 2){
+            const placesIds = await getPlacesId();
+            info = await getInfoPlaceByPlacesIds(placesIds);
+
+            if(info) {
+                return res.send({success: true, body: info});
             }
-        });
-    }
+        }
 
-return res.send({success: true, body: info});
+        return res.send({success: false, body: e});
+    }
 });
 
-function getPlacesId() {
+// router.get('/', async function (req, res, next) {
+//     const placesIds = await getPlacesId();
+//     const info = await getInfoPlaceByPlacesIds(placesIds);
+//
+//     if (!placesIds) {
+//         async.retry(5, await getPlacesId, async function(err, placesIds) {
+//             const info = await getInfoPlaceByPlacesIds(placesIds);
+//
+//             if (!info) {
+//                 async.retry(5, await getInfoPlaceByPlacesIds, async function(err, info) {
+//                     return res.send({success: true, body: info});
+//                 });
+//             }
+//         });
+//     }
+//
+//     if (!info) {
+//         async.retry(5, await getInfoPlaceByPlacesIds, async function(err, info) {
+//             return res.send({success: true, body: info});
+//         });
+//     }
+//
+// return res.send({success: true, body: info});
+// });
+
+async function getPlacesId() {
     return places
         .distinct('_id')
 }
 
-function getInfoPlaceByPlacesIds(placesIds) {
+async function getInfoPlaceByPlacesIds(placesIds) {
     return infoPlaces
         .find(
             {place: {$in: placesIds}},
