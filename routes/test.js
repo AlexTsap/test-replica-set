@@ -6,22 +6,22 @@ const mongoose = require('mongoose');
 const places = mongoose.model('Places');
 const infoPlaces = mongoose.model('InfoPlaces');
 
-// const asyncMiddleware = fn =>
-//     (req, res, next) => {
-//         Promise.resolve(fn(req, res, next))
-//             .catch(next);
-//     };
-//
-// router.get('/', asyncMiddleware(async function (req, res, next) {
-//     try {
-//         const placesIds = await getPlacesId();
-//         const info = await getInfoPlaceByPlacesIds(placesIds);
-//
-//         return res.send({success: true, body: info});
-//     } catch (e) {
-//         return res.send({success: true, body: e});
-//     }
-// }));
+const asyncMiddleware = fn =>
+    (req, res, next) => {
+        Promise.resolve(fn(req, res, next))
+            .catch(next);
+    };
+
+router.get('/', asyncMiddleware(async function (req, res, next) {
+    try {
+        const placesIds = await getPlacesId();
+        const info = await getInfoPlaceByPlacesIds(placesIds);
+
+        return res.send({success: true, body: info});
+    } catch (e) {
+        return res.send({success: false, body: e});
+    }
+}));
 
 router.get('/', async (req, res, next) => {
     const placesIds = await getPlacesId();
@@ -32,11 +32,13 @@ router.get('/', async (req, res, next) => {
     } catch (e) {
         let t = 0;
         let info;
-        while(t < 2){
+        let breakTheLoop = false;
+        while(t < 2 && !breakTheLoop){
             const placesIds = await getPlacesId();
             info = await getInfoPlaceByPlacesIds(placesIds);
 
             if(info) {
+                breakTheLoop = true;
                 return res.send({success: true, body: info});
             }
         }
