@@ -65,7 +65,7 @@ async function getInfoPlaceByPlacesIds(placesIds) {
                 answer: 1,
                 translations: {$elemMatch: {lang: 'en'}}
             }
-        ).limit(100)
+        ).limit(10)
         .lean()
         .exec();
 }
