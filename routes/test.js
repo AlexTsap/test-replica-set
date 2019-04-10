@@ -33,18 +33,17 @@ router.get('/', async (req, res, next) => {
         try {
             placesIds = await getPlacesId();
             info = await getInfoPlaceByPlacesIds(placesIds);
-            console.log(info);
         } catch (e) {
             counter--;
             error = e;
         }
     }
 
-    if (info) {
-        return res.send({success: true, body: info});
+    if (!info) {
+         return next(error);
     }
 
-    return next(error);
+    return res.send({success: true, body: info});
 });
 
 async function getPlacesId() {
