@@ -6,33 +6,52 @@ const async = require('async');
 const places = mongoose.model('Places');
 const infoPlaces = mongoose.model('InfoPlaces');
 
-router.get('/', async function (req, res, next) {
-    const placesIds = await getPlacesId();
-    const info = await getInfoPlaceByPlacesIds(placesIds);
-    if (!placesIds) {
-        async.retry({
-            times: 10,
-            interval: function(retryCount) {
-                return 50 * Math.pow(2, retryCount);
-            }
-        }, getPlacesId, async function(err, placesIds) {
-            const info = await getInfoPlaceByPlacesIds(placesIds);
+const asyncMiddleware = fn =>
+    (req, res, next) => {
+        Promise.resolve(fn(req, res, next))
+            .catch(next);
+    };
 
-            if (!info) {
-                async.retry({
-                    times: 10,
-                    interval: function(retryCount) {
-                        return 50 * Math.pow(2, retryCount);
-                    }
-                }, getInfoPlaceByPlacesIds, async function(err, info) {
-                    return res.send({success: true, body: info});
-                });
-            }
-        });
+router.get('/', asyncMiddleware(async function (req, res, next) {
+    try {
+        const placesIds = await getPlacesId();
+        const info = await getInfoPlaceByPlacesIds(placesIds);
+
+        return res.send({success: true, body: info});
+    } catch (e) {
+        return res.send({success: true, body: e});
     }
+}));
 
-    return res.send({success: true, body: info});
-});
+
+
+// router.get('/', async function (req, res, next) {
+//     const placesIds = await getPlacesId();
+//     const info = await getInfoPlaceByPlacesIds(placesIds);
+//     if (!placesIds) {
+//         async.retry({
+//             times: 10,
+//             interval: function(retryCount) {
+//                 return 50 * Math.pow(2, retryCount);
+//             }
+//         }, getPlacesId, async function(err, placesIds) {
+//             const info = await getInfoPlaceByPlacesIds(placesIds);
+//
+//             if (!info) {
+//                 async.retry({
+//                     times: 10,
+//                     interval: function(retryCount) {
+//                         return 50 * Math.pow(2, retryCount);
+//                     }
+//                 }, getInfoPlaceByPlacesIds, async function(err, info) {
+//                     return res.send({success: true, body: info});
+//                 });
+//             }
+//         });
+//     }
+
+// return res.send({success: true, body: info});
+// });
 
 function getPlacesId() {
     return places
