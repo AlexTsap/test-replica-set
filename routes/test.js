@@ -29,11 +29,19 @@ router.get('/', async (req, res, next) => {
     let info;
     let error = true;
 
+    async function wait(ms) {
+        return new Promise(resolve => {
+            setTimeout(resolve, ms);
+        });
+    }
+
     while (counter && error) {
         try {
             error = false;
             placesIds = await getPlacesId();
             info = await getInfoPlaceByPlacesIds(placesIds);
+            await wait(1000);
+
             console.log(info);
         } catch (e) {
             counter--;
