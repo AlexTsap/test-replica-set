@@ -18,6 +18,7 @@ app.set('view engine', 'pug');
 
 app.use(function (req, res, next) {
   console.log(res);
+  return next()
 });
 
 app.use(logger('dev'));
