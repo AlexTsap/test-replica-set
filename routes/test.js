@@ -52,7 +52,7 @@ async function getFinalResult() {
 router.get('/', async (req, res, next) => {
     try {
         const getInfo = await getFinalResult.createInterceptor(getFinalResult);
-        const info = getInfo();
+        const info = await getInfo();
         return res.send({success: true, body: info});
     } catch (e) {
         return next(e);
