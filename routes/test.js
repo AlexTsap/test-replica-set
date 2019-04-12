@@ -17,7 +17,11 @@ Function.prototype.createInterceptor = function createInterceptor(fn) {
                 times: 3,
                 interval: await wait(1000)
             }, await fn, function (err, result) {
-                return result ? result : throw new Error(`Error: ${err}`);
+                try {
+                    return result;
+                } catch (e) {
+                    throw new Error(`Error: ${e}`);
+                }
             })
         }
     };
