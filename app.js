@@ -10,16 +10,19 @@ const app = express();
 config(app);
 models();
 
-const mongoMiddleware = app.get('mongo.middleware');
+// const mongoMiddleware = app.get('mongo.middleware');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
-app.use(mongoMiddleware);
+app.use(function (req, res, next) {
+  console.log(res);
+});
+
 app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+// app.use(express.json());
+// app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
