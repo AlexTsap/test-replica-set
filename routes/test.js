@@ -1,59 +1,59 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
-// const async = require('async');
+const async = require('async');
 
 const places = mongoose.model('Places');
 const infoPlaces = mongoose.model('InfoPlaces');
 
-// const asyncMiddleware = fn =>
-//     (req, res, next) => {
-//         Promise.resolve(fn(req, res, next))
-//             .catch(next);
-//     };
-//
-// router.get('/', asyncMiddleware(async function (req, res, next) {
-//     try {
-//         const placesIds = await getPlacesId();
-//         const info = await getInfoPlaceByPlacesIds(placesIds);
-//
-//         return res.send({success: true, body: info});
-//     } catch (e) {
-//         return res.send({success: false, body: e});
-//     }
-// }));
+Function.prototype.createInterceptor = function createInterceptor(fn) {
+    return async function () {
+        const result = fn();
+
+        if (result) {
+            return result;
+        } else {
+            async.retry({
+                times: 3,
+                interval: await wait(1000)
+            }, await fn, function (err, result) {
+                return result ? result : throw new Error(`Error: ${err}`);
+            })
+        }
+    };
+};
+
+async function wait(ms) {
+    return new Promise(resolve => {
+        setTimeout(resolve, ms);
+    });
+}
+
+async function getFinalResult() {
+    const placeIds = await getPlacesId();
+
+    if (!placeIds) {
+        throw new Error('Ids were not found');
+    }
+
+    const infoResult = await getInfoPlaceByPlacesIds(placeIds);
+
+    if (!infoResult) {
+        throw new Error('Results were not found');
+    }
+
+    return infoResult;
+}
 
 router.get('/', async (req, res, next) => {
-    let counter = 3;
-    let placesIds;
-    let info;
-    let error = true;
+    try {
+        const finalResult = await getFinalResult();
+        const info = finalResult.createInterceptor(getFinalResult);
 
-    async function wait(ms) {
-        return new Promise(resolve => {
-            setTimeout(resolve, ms);
-        });
-    }
-
-    while (counter && error) {
-        try {
-            error = false;
-            placesIds = await getPlacesId();
-            info = await getInfoPlaceByPlacesIds(placesIds);
-            await wait(1000);
-
-            console.log(info);
-        } catch (e) {
-            counter--;
-            error = e;
-        }
-    }
-
-    if (info) {
         return res.send({success: true, body: info});
+    } catch (e) {
+        return next(e);
     }
-
-    return next(error);
 });
 
 async function getPlacesId() {
@@ -77,6 +77,10 @@ async function getInfoPlaceByPlacesIds(placesIds) {
         ).limit(10)
         .lean()
         .exec();
+}
+
+function interceptorDb() {
+
 }
 
 module.exports = router;
