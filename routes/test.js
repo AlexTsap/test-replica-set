@@ -6,6 +6,16 @@ const async = require('async');
 const places = mongoose.model('Places');
 const infoPlaces = mongoose.model('InfoPlaces');
 
+router.get('/', async (req, res, next) => {
+    try {
+        const getInfo = await getFinalResult.createInterceptor(getFinalResult);
+        const info = await getInfo();
+        return res.send({success: true, body: info});
+    } catch (e) {
+        return next(e);
+    }
+});
+
 Function.prototype.createInterceptor = function createInterceptor(fn) {
     return async function () {
         const result = fn();
@@ -15,7 +25,7 @@ Function.prototype.createInterceptor = function createInterceptor(fn) {
         } else {
             async.retry({
                 times: 3,
-                interval: await wait(1000)
+                interval: 1000
             }, await fn, function (err, result) {
                 try {
                     return result;
@@ -27,11 +37,13 @@ Function.prototype.createInterceptor = function createInterceptor(fn) {
     };
 };
 
-async function wait(ms) {
-    return new Promise(resolve => {
-        setTimeout(resolve, ms);
-    });
-}
+// async timeout
+//
+// async function wait(ms) {
+//     return new Promise(resolve => {
+//         setTimeout(resolve, ms);
+//     });
+// }
 
 async function getFinalResult() {
     const placeIds = await getPlacesId();
@@ -48,16 +60,6 @@ async function getFinalResult() {
 
     return infoResult;
 }
-
-router.get('/', async (req, res, next) => {
-    try {
-        const getInfo = await getFinalResult.createInterceptor(getFinalResult);
-        const info = await getInfo();
-        return res.send({success: true, body: info});
-    } catch (e) {
-        return next(e);
-    }
-});
 
 async function getPlacesId() {
     console.log('places');
@@ -80,10 +82,6 @@ async function getInfoPlaceByPlacesIds(placesIds) {
         ).limit(10)
         .lean()
         .exec();
-}
-
-function interceptorDb() {
-
 }
 
 module.exports = router;
